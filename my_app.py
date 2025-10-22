@@ -14,34 +14,42 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# ========== FRASES SEGÚN EMOCIÓN ==========
+# ========== FRASES HUMANAS Y EMPÁTICAS ==========
 frases = {
     "Triste": [
-        "Está bien sentirte así.\nIncluso las flores lloran antes de florecer 🌸",
-        "No te abandones.\nTu corazón aún tiene luz 💜",
-        "Un mal día no define tu historia 🌙"
+        "Está bien no estar bien. No te exijas sanar de golpe.",
+        "No te sueltes. Incluso en días grises sigues siendo luz.",
+        "Hoy duele, pero no será así para siempre.",
+        "Tu corazón merece descanso, no presión.",
+        "Un mal capítulo no borra toda tu historia."
     ],
     "Estresada": [
-        "Respira.\nPaso a pasito, tú puedes ☁️",
-        "No cargues el mundo sola.\nTe mereces calma ✨",
-        "Relaja tus hombros.\nLa paz es tuya 💜"
+        "Respira. No tienes que resolverlo todo hoy.",
+        "Haz una pausa. A veces el alma solo pide un respiro.",
+        "No cargues con más de lo que tu pecho puede sostener.",
+        "Paso a paso. Lo estás haciendo mejor de lo que crees.",
+        "El mundo puede esperar. Tú también importas."
     ],
     "Ansiosa": [
-        "Estás a salvo.\nEl ahora es suficiente 🌷",
-        "Un pensamiento no es una sentencia 💫",
-        "Tu mente hace ruido,\npero tu alma sabe la verdad 💜"
+        "Estás a salvo. Un pensamiento no define tu realidad.",
+        "La mente exagera, el momento presente no.",
+        "No estás sola en esto. Un respiro a la vez.",
+        "Tu paz vale más que tu preocupación.",
+        "No te castigues por sentir. Estás haciendo tu mejor intento."
     ],
     "Motivada": [
-        "Hoy brillas con más fuerza ✨",
-        "Tus sueños tienen prisa por verte triunfar 🌟",
-        "Lo que siembras hoy será magia mañana 💜"
+        "Sigue. Lo que sueñas también te está buscando.",
+        "Hoy es un buen día para avanzar, aunque sea un poquito.",
+        "Confía en lo que puedes llegar a ser.",
+        "Brillas más cuando no dudas de ti.",
+        "Tu esfuerzo construye futuros que aún no ves."
     ]
 }
 
 styles = {
-    "Cute Pastel": lambda t: t + "\n\n(｡•ᴗ-)✧",
-    "Poético Suave": lambda t: t.replace("\n", " ") + "\n\n— florece, alma bonita —",
-    "Divertido y Dulce": lambda t: t + "\n\n🍭✨"
+    "Acompañamiento cálido": lambda t: t + "\n\nCon cariño, sigue adelante 🤍",
+    "Minimal y directo": lambda t: t,
+    "Suave y esperanzador": lambda t: t + "\n\nMereces calma. Mereces luz."
 }
 
 # ========== FUNCIÓN DE TEXTO CENTRADO ==========
@@ -74,7 +82,7 @@ if st.button("✨ Generar Mensajito ✨"):
     draw = ImageDraw.Draw(img)
     font = ImageFont.load_default()
 
-    draw_centered_multiline(draw, mensaje, font, img.width, start_y=260, fill=(85,75,150))
+    draw_centered_multiline(draw, mensaje, font, img.width, start_y=260, fill=(70,60,120))
 
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")
@@ -89,9 +97,9 @@ if st.button("✨ Generar Mensajito ✨"):
 
 # ========== FOOTER ALEATORIO ==========
 frases_footer = [
-    "Aunque hoy duela, mañana floreces 🌷",
-    "La calma también es un avance ☁️",
-    "Mereces cosas bonitas, no lo dudes 💜"
+    "Un día a la vez 🤍",
+    "No te sueltes.",
+    "También mereces cosas bonitas."
 ]
 
 st.write("---")
