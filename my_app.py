@@ -94,13 +94,3 @@ if st.button("✨ Generar Mensajito ✨"):
         file_name="mensaje.png",
         mime="image/png"
     )
-
-# ========== FOOTER ALEATORIO ==========
-frases_footer = [
-    "Un día a la vez 🤍",
-    "No te sueltes.",
-    "También mereces cosas bonitas."
-]
-
-st.write("---")
-st.caption(random.choice(frases_footer))
