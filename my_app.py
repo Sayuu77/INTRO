@@ -48,7 +48,7 @@ frases = {
 
 styles = {
     "Acompañamiento cálido": lambda t: t + "\n\nCon cariño, sigue adelante 🤍",
-    "Minimal y directo": lambda t: t,
+    "Directo": lambda t: t,
     "Suave y esperanzador": lambda t: t + "\n\nMereces calma. Mereces luz."
 }
 
