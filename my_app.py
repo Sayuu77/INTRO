@@ -65,7 +65,7 @@ def draw_centered_multiline(draw, text, font, img_width, start_y, line_spacing=1
         y += h + line_spacing
 
 # ========== UI ==========
-st.title("✨Generador de Mensajes Bonitos✨")
+st.title("✨Generador de Mensajes✨")
 
 emocion = st.selectbox("¿Cómo te sientes hoy?", list(frases.keys()))
 estilo = st.selectbox("Elige el estilo del mensaje", list(styles.keys()))
