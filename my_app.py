@@ -2,9 +2,11 @@ import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import random
 import io
+import os
+import textwrap
 
 # ---------------------------------------------------------
-# 🌸 CONFIGURACIÓN DE LA PÁGINA
+# 🌸 CONFIG PAGE
 # ---------------------------------------------------------
 st.set_page_config(
     page_title="Generador de Mensajes Bonitos",
@@ -13,7 +15,7 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# 🎨 ESTILOS AESTHETIC
+# 🎨 STYLES
 # ---------------------------------------------------------
 st.markdown("""
 <style>
@@ -41,29 +43,26 @@ h1, h2, h3 {
     text-align: center;
     font-size: 18px;
 }
-footer {
-    visibility: hidden;
-}
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 🌸 TÍTULO
+# 🌸 TITLE
 # ---------------------------------------------------------
 st.markdown("## 🌸 Generador de Mensajes Bonitos ✨")
 st.write("Escribe cómo te sientes, elige el estilo y recibe un mensajito bonito para tu corazón 💜")
 
 # ---------------------------------------------------------
-# 🌸 SELECTORES
+# 🌸 SELECTORS
 # ---------------------------------------------------------
-emocion = st.selectbox("¿Cómo te sientes hoy? 💭", 
+emocion = st.selectbox("¿Cómo te sientes hoy? 💭",
                        ["Triste", "Estresada", "Ansiosa", "Motivada", "Cansada", "Con miedo"])
 
-estilo = st.radio("Elige el estilo del mensaje 🌈", 
+estilo = st.radio("Elige el estilo del mensaje 🌈",
                   ["Cute Pastel", "Poético Suave", "Divertido y Dulce"])
 
 # ---------------------------------------------------------
-# 🌸 MENSAJES BONITOS
+# 🌸 MESSAGES & FOOTER
 # ---------------------------------------------------------
 mensajes = {
     "Triste": {
@@ -107,26 +106,95 @@ footer_frases = [
 ]
 
 # ---------------------------------------------------------
-# 🌸 BOTÓN PRINCIPAL
+# Helper: cargar fuente con fallback
+# ---------------------------------------------------------
+def load_font(size):
+    # Rutas candidatas (revisa /fonts/ si quieres subir una fuente personalizada)
+    candidates = [
+        "./fonts/Inter-Regular.ttf",
+        "./fonts/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+        "C:/Windows/Fonts/arial.ttf",
+        "arial.ttf"
+    ]
+    for path in candidates:
+        try:
+            if os.path.exists(path):
+                return ImageFont.truetype(path, size)
+            # also try to load by name (some envs resolve it)
+            ImageFont.truetype(path, size)
+            return ImageFont.truetype(path, size)
+        except Exception:
+            continue
+    # Fallback: font por defecto (no .ttf) — siempre funciona
+    return ImageFont.load_default()
+
+# ---------------------------------------------------------
+# Helper: dibujar texto multiline centrado
+# ---------------------------------------------------------
+def draw_centered_multiline(draw, text, font, image_width, start_y, line_spacing=10, fill=(85,75,150)):
+    # envolver texto para que no salga del ancho
+    wrap_width = 28  # ajusta según tamaño de fuente y canvas
+    lines = []
+    for raw_line in text.split("\n"):
+        wrapped = textwrap.wrap(raw_line, width=wrap_width) or [""]
+        lines.extend(wrapped)
+    # calcular alto total
+    total_h = 0
+    line_heights = []
+    for line in lines:
+        w, h = draw.textsize(line, font=font)
+        line_heights.append((w, h))
+        total_h += h + line_spacing
+    total_h -= line_spacing  # quitar spacing extra del final
+
+    y = start_y
+    for i, line in enumerate(lines):
+        w, h = line_heights[i]
+        x = (image_width - w) // 2
+        draw.text((x, y), line, font=font, fill=fill)
+        y += h + line_spacing
+
+# ---------------------------------------------------------
+# 🌸 GENERAR MENSAJE Y PNG
 # ---------------------------------------------------------
 if st.button("✨ Generar Mensajito ✨"):
     mensaje = mensajes[emocion][estilo]
     st.markdown(f"<div class='message-card'>{mensaje}</div>", unsafe_allow_html=True)
 
-    # Generar PNG
-    img = Image.new("RGB", (900, 500), color="#EAE7FF")
+    # Crear imagen
+    img_w, img_h = 900, 500
+    img = Image.new("RGB", (img_w, img_h), color="#EAE7FF")
     draw = ImageDraw.Draw(img)
 
-    # Nubes Soft Clouds
-    cloud_color = (200, 210, 255)
-    draw.ellipse((50, 60, 300, 200), fill=cloud_color)
-    draw.ellipse((200, 90, 450, 240), fill=cloud_color)
-    draw.ellipse((400, 50, 700, 200), fill=cloud_color)
-    draw.ellipse((600, 90, 850, 240), fill=cloud_color)
+    # Soft Clouds (formas simples)
+    cloud_color = (221, 225, 255)
+    draw.ellipse((30, 50, 300, 190), fill=cloud_color)
+    draw.ellipse((200, 80, 480, 230), fill=cloud_color)
+    draw.ellipse((380, 40, 700, 180), fill=cloud_color)
+    draw.ellipse((600, 90, 870, 240), fill=cloud_color)
 
-    font = ImageFont.truetype("arial.ttf", 32)
-    draw.text((100, 280), mensaje, font=font, fill=(85, 75, 150))
+    # Marco redondeado (simulado con rect y bordes)
+    margin = 40
+    draw.rounded_rectangle((margin, margin, img_w - margin, img_h - margin), radius=20, outline="#DDD6FF", width=3)
 
+    # Cargar fuente con fallback
+    font_size = 30
+    font = load_font(font_size)
+
+    # Dibujar texto centrado y envuelto
+    draw_centered_multiline(draw, mensaje, font, img_w, start_y=260, line_spacing=8, fill=(85, 75, 150))
+
+    # Opcional: pequeña firma/emoji
+    try:
+        small_font = load_font(18)
+        draw.text((img_w - 180, img_h - 60), "🌸 Generador Cute", font=small_font, fill=(120, 100, 180))
+    except Exception:
+        pass
+
+    # Guardar a buffer
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     byte_im = buf.getvalue()
